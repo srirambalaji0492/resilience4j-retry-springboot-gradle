@@ -1,0 +1,16 @@
+resilience4j.retry:
+  enabled: true
+  backends:
+    backendA:
+      maxRetryAttempts: 3
+      waitDuration: 100
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      retryExceptions:
+        - java.net.UnknownHostException
+        - java.io.IOException
+
+
+server:
+  servlet:
+    context-path: /weather
