@@ -19,11 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = WeatherController.class)
 public class WeatherApplicationTests {
 
-    /*
-    @Mock
-    private RestTemplate restTemplate;
-     */
-
     @Autowired
     private MockMvc mockMvc;
 
