@@ -25,6 +25,7 @@ dependencies {
 	*/
 
 	compile "io.github.resilience4j:resilience4j-retry:${resilience4jVersion}"
+	compile "io.github.resilience4j:resilience4j-circuitbreaker:${resilience4jVersion}"
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'

@@ -1,6 +1,8 @@
 package com.ideas2it.cb.demo.config;
 
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +26,7 @@ public class WeatherConfiguration {
         return RetryRegistry.of(getRetryConfig());
     }
 
-    public RetryConfig getRetryConfig(){
+    private RetryConfig getRetryConfig() {
 
         return RetryConfig.custom()
                 .maxAttempts(3)
@@ -33,6 +35,19 @@ public class WeatherConfiguration {
                 .build();
     }
 
+    @Bean(name = "circuitBreakerRegistry")
+    public CircuitBreakerRegistry getCircuitBreakerRegistry() {
+        return CircuitBreakerRegistry.of(getCircuitBreakerConfig());
+    }
+
+    private CircuitBreakerConfig getCircuitBreakerConfig() {
+        return CircuitBreakerConfig.custom()
+                .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
+                .slidingWindowSize(10)
+                //.failureRateThreshold(70.0f)
+                .build();
+
+    }
 
 
 }

@@ -1,9 +1,7 @@
 package com.ideas2it.cb.demo.controller;
 
+import com.ideas2it.cb.demo.utils.CircuitBreaker;
 import com.ideas2it.cb.demo.utils.Constants;
-import com.ideas2it.cb.demo.utils.Retryer;
-import io.github.resilience4j.retry.RetryRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +16,15 @@ import java.util.function.Supplier;
 @RequestMapping(path = "/weather")
 public class WeatherController {
 
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private RetryRegistry retryRegistry;
-    @Autowired
-    private Retryer retryer;
+    private final RestTemplate restTemplate;
+    private final CircuitBreaker cb;
     private int counter = 0;
     private final int total = 15;
+
+    public WeatherController(RestTemplate restTemplate, CircuitBreaker cb) {
+        this.restTemplate = restTemplate;
+        this.cb = cb;
+    }
 
     @GetMapping(path = "/get/{location}")
     public ResponseEntity getWeatherForLocation(@PathVariable(name = "location", required = true) String location){
@@ -33,7 +32,8 @@ public class WeatherController {
         String originalResp;
 
         Supplier<String> function = () -> getWeatherForCity(location);
-        originalResp =  retryer.retrySupllier(function);
+        //originalResp =  retryer.retrySupllier(function);
+        originalResp = cb.breakCircuit(function);
         System.out.println(originalResp);
 
         return ResponseEntity.ok(originalResp);
@@ -41,7 +41,7 @@ public class WeatherController {
 
 
     private String getWeatherForCity(String cityName){
-        //checkandThrow();
+        checkandThrow();
         String url = String.format("%s%s%s%s%s" , Constants.API_WEATHER, "?q=",cityName, "&appid=", Constants.API_KEY );
         System.out.println("url : " + url);
         String response = restTemplate.exchange(url, HttpMethod.GET, null, String.class).getBody();
