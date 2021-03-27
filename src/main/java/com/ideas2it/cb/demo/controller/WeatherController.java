@@ -19,7 +19,6 @@ public class WeatherController {
     private final RestTemplate restTemplate;
     private final CircuitBreaker cb;
     private int counter = 0;
-    private final int total = 15;
 
     public WeatherController(RestTemplate restTemplate, CircuitBreaker cb) {
         this.restTemplate = restTemplate;
@@ -27,7 +26,7 @@ public class WeatherController {
     }
 
     @GetMapping(path = "/get/{location}")
-    public ResponseEntity getWeatherForLocation(@PathVariable(name = "location", required = true) String location){
+    public ResponseEntity getWeatherForLocation(@PathVariable(name = "location") String location) {
 
         String originalResp;
 
@@ -50,6 +49,7 @@ public class WeatherController {
     }
 
     private void checkandThrow(){
+        int total = 15;
         System.out.println("Exception counter : " +counter + " Total : " + total);
         if(counter < total){
             counter++;
