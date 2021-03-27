@@ -16,6 +16,7 @@ public class CircuitBreaker {
 
     public <T> T breakCircuit(Supplier<T> function) {
         io.github.resilience4j.circuitbreaker.CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker("function");
+        System.out.println("circuitBreaker State : " +circuitBreaker.getState().name());
         Supplier<T> breakedSupplier = circuitBreaker.decorateSupplier(function);
         return breakedSupplier.get();
     }

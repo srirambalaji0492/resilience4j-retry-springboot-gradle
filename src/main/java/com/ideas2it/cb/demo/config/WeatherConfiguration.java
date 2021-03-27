@@ -7,6 +7,7 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.NoRouteToHostException;
@@ -44,7 +45,9 @@ public class WeatherConfiguration {
         return CircuitBreakerConfig.custom()
                 .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
                 .slidingWindowSize(10)
-                //.failureRateThreshold(70.0f)
+                .failureRateThreshold(100.0f)
+                .recordExceptions(ResourceAccessException.class, UnknownHostException.class, RuntimeException.class)
+                .minimumNumberOfCalls(10)
                 .build();
 
     }
