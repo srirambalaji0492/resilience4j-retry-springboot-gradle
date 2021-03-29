@@ -17,13 +17,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @WebMvcTest(controllers = WeatherController.class)
-public class WeatherApplicationTests {
+class WeatherApplicationTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void testWeather() throws Exception {
+    void testWeather() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/weather/get/bombay")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))

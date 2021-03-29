@@ -2,6 +2,7 @@ package com.ideas2it.cb.demo.controller;
 
 import com.ideas2it.cb.demo.utils.CircuitBreaker;
 import com.ideas2it.cb.demo.utils.Constants;
+import com.ideas2it.cb.demo.utils.Retryer;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +19,13 @@ public class WeatherController {
 
     private final RestTemplate restTemplate;
     private final CircuitBreaker cb;
+    private final Retryer retryer;
     private int counter = 0;
 
-    public WeatherController(RestTemplate restTemplate, CircuitBreaker cb) {
+    public WeatherController(RestTemplate restTemplate, CircuitBreaker cb, Retryer retryer) {
         this.restTemplate = restTemplate;
         this.cb = cb;
+        this.retryer = retryer;
     }
 
     @GetMapping(path = "/get/{location}")
@@ -31,8 +34,9 @@ public class WeatherController {
         String originalResp;
 
         Supplier<String> function = () -> getWeatherForCity(location);
-        //originalResp =  retryer.retrySupllier(function);
-        originalResp = cb.breakCircuit(function);
+        Supplier<String> breakedCIrcuitFunction = cb.breakCircuitwithoutGet(function);
+        originalResp = retryer.retrySupllier(breakedCIrcuitFunction);
+
         System.out.println(originalResp);
 
         return ResponseEntity.ok(originalResp);
