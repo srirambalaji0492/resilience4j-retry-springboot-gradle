@@ -44,7 +44,7 @@ public class WeatherController {
 
 
     private String getWeatherForCity(String cityName){
-        checkandThrow();
+        //checkandThrow();
         String url = String.format("%s%s%s%s%s" , Constants.API_WEATHER, "?q=",cityName, "&appid=", Constants.API_KEY );
         System.out.println("url : " + url);
         String response = restTemplate.exchange(url, HttpMethod.GET, null, String.class).getBody();

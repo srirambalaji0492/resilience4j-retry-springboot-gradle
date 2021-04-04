@@ -28,9 +28,8 @@ public class WeatherConfiguration {
     }
 
     private RetryConfig getRetryConfig() {
-
         return RetryConfig.custom()
-                .maxAttempts(15)
+                .maxAttempts(10)
                 .waitDuration(Duration.ofSeconds(2))
                 .retryExceptions(RuntimeException.class, UnknownHostException.class, NoRouteToHostException.class)
                 .build();
